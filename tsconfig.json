@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"baseUrl": ".",
-		"outDir": "build/dist",
+		"outDir": "./build",
 		"module": "esnext",
 		"target": "es5",
 		"lib": ["es6", "DOM"],
@@ -23,7 +23,8 @@
 		"strict": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true,
-		"noFallthroughCasesInSwitch": true
+		"noFallthroughCasesInSwitch": true,
+		"plugins": [{ "name": "typescript-plugin-css-modules" }]
 	},
 	"include": ["src"],
 	"exclude": ["node_modules"]
