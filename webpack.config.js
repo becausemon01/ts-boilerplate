@@ -1,6 +1,7 @@
 const path = require('path')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
+const { ModuleFederationPlugin } = require('webpack').container
 
 module.exports = {
 	entry: [path.resolve('src/index.tsx')],
@@ -166,6 +167,24 @@ module.exports = {
 		},
 	},
 	plugins: [
+		new ModuleFederationPlugin({
+			name: 'Child',
+			filename: 'remoteEntry.js',
+			exposes: {},
+			remotes: {},
+			shared: {
+				react: {
+					eager: true,
+					singleton: true,
+					requiredVersion: dependencies.react,
+				},
+				'react-dom': {
+					eager: true,
+					singleton: true,
+					requiredVersion: dependencies['react-dom'],
+				},
+			},
+		}),
 		new HTMLWebpackPlugin({
 			template: path.resolve('public/index.html'),
 			filename: './index.html',
