@@ -1,14 +1,13 @@
 const path = require('path')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
-const { ModuleFederationPlugin } = require('webpack').container
 
 module.exports = {
-	entry: [path.resolve('src/index.tsx')],
+	entry: './src/index.tsx',
 	mode: 'development',
-	devtool: 'cheap-module-source-map',
+	devtool: 'inline-source-map',
 	output: {
-		path: path.resolve('build'),
+		path: path.resolve(__dirname, './build'),
 		filename: '[name].js',
 		chunkFilename: '[name].js',
 		publicPath: '/',
@@ -123,68 +122,51 @@ module.exports = {
 		],
 	},
 	devServer: {
-		open: false,
+		open: true,
 		hot: true,
 		historyApiFallback: true,
 		port: 8001,
+		static: './build',
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
 			'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
 		},
 	},
-	optimization: {
-		minimize: true,
-		minimizer: [
-			new TerserPlugin({
-				parallel: 4,
-				extractComments: false,
-			}),
-		],
-		splitChunks: {
-			cacheGroups: {
-				default: false,
-				vendors: false,
-				// Vendor chunk
-				vendor: {
-					// Name of the chunk
-					name: 'vendor',
-					// Async + async chunks
-					chunks: 'all',
-					// Import file path containing node_modules
-					test: /node_modules/,
-					priority: 20,
-				},
-				common: {
-					name: 'common',
-					minChunks: 2,
-					chunks: 'all',
-					priority: 10,
-					reuseExistingChunk: true,
-					enforce: true,
-				},
-			},
-		},
-	},
+	// optimization: {
+	// 	minimize: true,
+	// 	minimizer: [
+	// 		new TerserPlugin({
+	// 			parallel: 4,
+	// 			extractComments: false,
+	// 		}),
+	// 	],
+	// 	splitChunks: {
+	// 		cacheGroups: {
+	// 			default: false,
+	// 			vendors: false,
+	// 			// Vendor chunk
+	// 			vendor: {
+	// 				// Name of the chunk
+	// 				name: 'vendor',
+	// 				// Async + async chunks
+	// 				chunks: 'all',
+	// 				// Import file path containing node_modules
+	// 				test: /node_modules/,
+	// 				priority: 20,
+	// 			},
+	// 			common: {
+	// 				name: 'common',
+	// 				minChunks: 2,
+	// 				chunks: 'all',
+	// 				priority: 10,
+	// 				reuseExistingChunk: true,
+	// 				enforce: true,
+	// 			},
+	// 		},
+	// 	},
+	// },
 	plugins: [
-		new ModuleFederationPlugin({
-			name: 'Child',
-			filename: 'remoteEntry.js',
-			exposes: {},
-			remotes: {},
-			shared: {
-				react: {
-					eager: true,
-					singleton: true,
-					requiredVersion: dependencies.react,
-				},
-				'react-dom': {
-					eager: true,
-					singleton: true,
-					requiredVersion: dependencies['react-dom'],
-				},
-			},
-		}),
 		new HTMLWebpackPlugin({
 			template: path.resolve('public/index.html'),
 			filename: './index.html',
